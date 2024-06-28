@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: systemd-injection-checker-webhook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: systemd-injection-checker-webhook
+  template:
+    metadata:
+      labels:
+        app: systemd-injection-checker-webhook
+    spec:
+      containers:
+      - name: systemd-injection-checker-webhook
+        image: quay.io/weihuang/systemd-checker-webhook:1.0
+        ports:
+        - containerPort: 8080
+        env:
+        - name: CERT_FILE
+          value: '/etc/webhook/tls/tls.crt'
+        - name: KEY_FILE
+          value: '/etc/webhook/tls/tls.key'
+        volumeMounts:
+        - name: webhook-tls
+          mountPath: /etc/webhook/tls
+          readOnly: true
+      volumes:
+      - name: webhook-tls
+        secret:
+          secretName: webhook-tls

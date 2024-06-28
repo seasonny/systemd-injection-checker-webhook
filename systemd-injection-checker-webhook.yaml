@@ -1,0 +1,23 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: systemd-injection-checker-webhook
+  annotations:
+    service.beta.openshift.io/inject-cabundle: "true"
+webhooks:
+  - name: systemd-injection-checker.example.redhat.com
+    rules:
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["pods"]
+    clientConfig:
+      service:
+        namespace: default
+        name: systemd-injection-checker-webhook
+        path: "/validate"
+        port: 443
+      caBundle: "" # OpenShift will inject the correct CA bundle
+    admissionReviewVersions: ["v1"]
+    sideEffects: None
+    timeoutSeconds: 5

@@ -69,12 +69,9 @@ func main() {
 	certFile := os.Getenv("CERT_FILE")
 	keyFile := os.Getenv("KEY_FILE")
 
-	if certFile == "" || keyFile == "" {
-		panic("CERT_FILE and KEY_FILE environment variables must be set")
-	}
-
 	http.HandleFunc("/validate", validatePod)
 
+	// start the HTTPS server
 	go func() {
 		fmt.Println("Starting HTTP server on :8080")
 		if err := http.ListenAndServe(":8080", nil); err != nil {
@@ -82,15 +79,26 @@ func main() {
 		}
 	}()
 
-	fmt.Println("Starting HTTPS server on :8443")
-	server := &http.Server{
-		Addr: ":8443",
-		TLSConfig: &tls.Config{
-			MinVersion: tls.VersionTLS12,
-		},
+	// If certificate and key files are provided, start the HTTPS server
+	if certFile != "" && keyFile != "" {
+		go func() {
+			fmt.Println("Starting HTTPS server on :8443")
+			server := &http.Server{
+				Addr: ":8443",
+				TLSConfig: &tls.Config{
+					MinVersion: tls.VersionTLS12,
+				},
+			}
+
+			if err := server.ListenAndServeTLS(certFile, keyFile); err != nil {
+				panic(err)
+			}
+		}()
+	} else {
+		fmt.Println("No CERT_FILE and KEY_FILE provided, HTTPS server not started")
 	}
 
-	if err := server.ListenAndServeTLS(certFile, keyFile); err != nil {
-		panic(err)
-	}
+	// to keep the main goroutine running to ensure the app does not exit.
+	// This way, the app will still keep running even if no certificate file is provided.
+	select {}
 }

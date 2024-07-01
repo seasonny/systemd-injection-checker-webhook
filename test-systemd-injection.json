@@ -29,6 +29,3 @@
     }
   }
 }
-
-
-// wget --no-check-certificate --header="Content-Type: application/json" --post-file=data.json https://systemd-injection-checker-webhook.default.svc:443/validate -O - -q

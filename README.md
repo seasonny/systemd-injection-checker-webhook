@@ -66,6 +66,11 @@ oc apply -f systemd-injection-checker-webhook.yaml
 oc apply -f systemd-injection-pod.yaml
 ```
 
+6. If everything is good, you will see something like this
+```
+Error from server: error when creating "systemd-injection-pod.yaml": admission webhook "systemd-injection-checker.example.redhat.com" denied the request: Annotation with prefix 'org.systemd.property.' is not allowed: org.systemd.property.SuccessAction
+```
+
 ## Limitations & Disclaimers
 
 * This webhook is a mitigation strategy and does not fix the underlying issue in CRI-O.

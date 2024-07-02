@@ -61,6 +61,11 @@ oc apply -f systemd-injection-checker-webhook-deployment.yaml
 oc apply -f systemd-injection-checker-webhook.yaml
 ```
 
+5. Deploy a pod with systemd annotation for test
+```
+oc apply -f systemd-injection-pod.yaml
+```
+
 ## Limitations & Disclaimers
 
 * This webhook is a mitigation strategy and does not fix the underlying issue in CRI-O.

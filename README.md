@@ -28,13 +28,6 @@ curl -X POST -H "Content-Type: application/json" --data @test-systemd-injection.
 wget --no-check-certificate --header="Content-Type: application/json" --post-file=test-systemd-injection.json http://localhost:8080/validate -O - -q
 ```
 
-## Testing in Your Local Container Environment
-```
-podman run -p 8080:8080 $your-registry/$repo/systemd-checker-webhook:1.1
-curl -X POST -H "Content-Type: application/json" --data @test-systemd-injection.json http://localhost:8080/validate
-wget --no-check-certificate --header="Content-Type: application/json" --post-file=test-systemd-injection.json http://localhost:8080/validate -O - -q
-```
-
 ## Prerequisites
 
 - OpenShift 4 cluster
@@ -48,20 +41,25 @@ wget --no-check-certificate --header="Content-Type: application/json" --post-fil
 ```
 podman build -t $your-registry/$repo/systemd-checker-webhook:1.1 .
 ```
+2. Testing in Your Local Container Environment
+```
+podman run -p 8080:8080 $your-registry/$repo/systemd-checker-webhook:1.1
+curl -X POST -H "Content-Type: application/json" --data @test-systemd-injection.json http://localhost:8080/validate
+wget --no-check-certificate --header="Content-Type: application/json" --post-file=test-systemd-injection.json http://localhost:8080/validate -O - -q
+```
 
-2. Push the image to your registry:
+3. Push the image to your registry:
 ```
 podman push $your-registry/$repo/systemd-injection-checker-webhook:1.1
 ```
 
-3. Deploy the webhook:
+4. Deploy the webhook:
 
 ```
-oc apply -f systemd-injection-checker-webhook-service
+oc apply -f systemd-injection-checker-webhook-service.yaml
 oc apply -f systemd-injection-checker-webhook-deployment.yaml
 oc apply -f systemd-injection-checker-webhook.yaml
 ```
-
 
 ## Limitations & Disclaimers
 
